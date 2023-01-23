@@ -15,7 +15,8 @@ class MensagemController extends Controller
         $destinatario = User::find($request->destinatario);
         $remetente = Auth::user()->id;
         $mensagens = DB::table('mensagens')
-            ->orderBy('created_at')
+            ->whereIn('destinatario_id', array($destinatario->id, $remetente))
+            ->whereIn('remetente_id', array($remetente, $destinatario->id))
             ->get();
         return view('app.chat', compact(['destinatario', 'remetente', 'mensagens']));
     }
