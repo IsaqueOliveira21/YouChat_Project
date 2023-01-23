@@ -11,23 +11,30 @@
 <div class="container">
     <h1 class="mt-5 text-center">YouChat - {{\Illuminate\Support\Facades\Auth::user()->name}}</h1>
     <hr>
-    <form action="{{ route('mensagem.index') }}" class="form-control" method="GET"
+    <form action="{{ route('mensagem.store') }}" class="form-control" method="POST"
           enctype="application/x-www-form-urlencoded">
         @csrf
         <div class="row">
-            <div class="col-10">
-                <select name="destinatario" id="destinatario" class="form-select" aria-label="Default select example">
-                    <option selected>Contacts</option>
-                    @foreach($users as $user)
-                        <option value="{{$user->id}}">{{$user->name}}</option>
+            <input type="hidden" name="destinatario_id" id="destinatario_id" value="{{ $destinatario->id }}">
+            <h3 style="text-align: left">Chating with {{ $destinatario->name }}</h3>
+            <hr>
+            <div class="col-12">
+                <div class="container">
+                    @foreach($mensagens as $mensagem)
+                        <p style="{{ $mensagem->destinatario_id == $remetente ? 'text-align: left;' : 'text-align: right;' }}">{{$mensagem->mensagem}}</p>
                     @endforeach
-                </select>
-            </div>
-            <div class="col-2">
-                <button type="submit" class="btn btn-primary">Chat</button>
-                <a href="{{ route('user.logout') }}" class="btn btn-secondary" role="button">Log-out</a>
+                </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-11">
+                <input type="text" class="form-control" name="mensagem" placeholder="Type here...">
+            </div>
+            <div class="col-1">
+                <button type="submit" class="btn btn-success">Send</button>
+            </div>
+        </div>
+
     </form>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"

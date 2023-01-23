@@ -22,9 +22,14 @@ class UserController extends Controller
         }
     }
 
+    public function logout(){
+        Auth::logout();
+        return redirect()->route('login');
+    }
+
     public function index()
     {
-        $users = User::all();
+        $users = User::where('id', '!=', Auth::user()->id)->get();
         return view('app.index', compact('users'));
     }
 }
