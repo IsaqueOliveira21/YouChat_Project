@@ -15,8 +15,16 @@ class MensagemController extends Controller
         $destinatario = User::find($request->destinatario);
         $remetente = Auth::user()->id;
         $mensagens = DB::table('mensagens')
-            ->whereIn('destinatario_id', array($destinatario->id, $remetente))
-            ->whereIn('remetente_id', array($remetente, $destinatario->id))
+            //->whereIn('destinatario_id', array($destinatario->id, $remetente))
+            //->whereIn('remetente_id', array($remetente, $destinatario->id))
+            ->where(function ($query) use ($remetente, $destinatario) { // <-- ESTE MÉTODO É MAIS LOGICO QUE O COM WHERE IN
+                $query->where('remetente_id', $remetente)
+                    ->where('destinatario_id', $destinatario->id);
+            })
+            ->orWhere(function($query) use($remetente, $destinatario) {
+                $query->where('remetente_id', $destinatario->id)
+                    ->where('destinatario_id', $remetente);
+            })
             ->get();
         return view('app.chat', compact(['destinatario', 'remetente', 'mensagens']));
     }
